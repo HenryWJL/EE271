@@ -1,1 +1,1 @@
-This repository includes some codes of AI&ML's homework.
+EE271-python homework.
