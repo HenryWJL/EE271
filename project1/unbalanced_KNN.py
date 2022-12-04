@@ -2,6 +2,7 @@ import torch
 import pandas as pd
 from torch.utils.data import DataLoader
 from sklearn.neighbors import KNeighborsClassifier
+from imblearn.over_sampling import SMOTE
 
 # Please revise the absolute path below so that the program can run on your computer.
 
@@ -64,4 +65,20 @@ Test_prediction=KNN.predict(Test_input.float())
 Test_prediction=torch.FloatTensor(Test_prediction)
 printRecallAndPrecision(Test_prediction,Test_target)
 print('accuracy:',round(KNN.score(Test_input,Test_target),3))
+print('------------------------------')
 
+# Improved
+# Train Process
+
+sm=SMOTE(random_state=42)
+Train_input_res,Train_target_res=sm.fit_resample(Train_input,Train_target)
+Train_input_res=torch.FloatTensor(Train_input_res)
+Train_target_res=torch.FloatTensor(Train_target_res)
+KNN.fit(Train_input_res,Train_target_res)
+
+# Test Process
+
+Test_prediction=KNN.predict(Test_input.float())
+Test_prediction=torch.FloatTensor(Test_prediction)
+printRecallAndPrecision(Test_prediction,Test_target)
+print('accuracy:',round(KNN.score(Test_input,Test_target),3))
