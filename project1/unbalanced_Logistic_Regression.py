@@ -2,6 +2,7 @@ import torch
 import pandas as pd
 from torch.utils.data import DataLoader
 from torch import nn
+from imblearn.over_sampling import SMOTE
 
 # When you run the program, sometimes there may appear 'ZeroDivisionError' or 'Loss-Unabated-Error'.
 # Don't worry, restart the program one more times until the training process can proceed successfully.
@@ -91,5 +92,30 @@ for idx in range(len(Test_target)):
     else:
         Test_target[idx]=0
 Test_target=torch.unsqueeze(torch.FloatTensor(Test_target),dim=1)
+Test_prediction=mymodel(Test_input.float())
+printAccuracy(Test_prediction,Test_target)
+print('---------------------------------------------------------------------------------')
+
+# Improved
+# Train Process
+
+sm=SMOTE(random_state=42)
+Train_input_res,Train_target_res=sm.fit_resample(Train_input,Train_target)
+Train_input_res=torch.FloatTensor(Train_input_res)
+Train_target_res=torch.unsqueeze(torch.FloatTensor(Train_target_res),dim=1)
+
+for epoch in range(100000):    
+    Train_prediction=mymodel(Train_input_res.float())
+    Train_loss=loss_fn(Train_prediction.float(),Train_target_res.float())
+    optimizer.zero_grad()
+    Train_loss.backward()
+    optimizer.step()
+        
+    if epoch%10000==0:
+        print('Training_set: loss:',round(Train_loss.item(),3),end=' , ')
+        printRecallAndPrecision(Train_prediction,Train_target_res)
+        
+# Test Process
+
 Test_prediction=mymodel(Test_input.float())
 printAccuracy(Test_prediction,Test_target)
