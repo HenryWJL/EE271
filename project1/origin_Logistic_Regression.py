@@ -6,10 +6,10 @@ from torch import nn
 # When you run the program, sometimes there may appear 'ZeroDivisionError' or 'Loss-Unabated-Error'.
 # Don't worry, restart the program one more times until the training process can proceed successfully.
 ##
-# Please revise the absolute path below so that the program can run on your computer.
+# If you can't find the data files, please revise the file path below.
 
-train_data_path='/home/txke/Python_codes/project1/origin_breast_cancer_data.csv'
-test_data_path='/home/txke/Python_codes/project1/breast_cancer_data_357B_100M.csv'
+train_data_path='origin_breast_cancer_data.csv'
+test_data_path='breast_cancer_data_357B_100M.csv'
 
 class origin_breast_cancer_dataset(torch.utils.data.Dataset):
     def __init__(self,*args,**kwargs):
