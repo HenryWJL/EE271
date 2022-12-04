@@ -3,11 +3,19 @@ import pandas as pd
 from torch.utils.data import DataLoader
 from torch import nn
 
+# When you run the program, sometimes there may appear 'ZeroDivisionError' or 'Loss-Unabated-Error'.
+# Don't worry, restart the program one more times until the training process can proceed successfully.
+##
+# Please revise the absolute path below so that the program can run on your computer.
+
+train_data_path='/home/txke/Python_codes/project1/origin_breast_cancer_data.csv'
+test_data_path='/home/txke/Python_codes/project1/breast_cancer_data_357B_100M.csv'
+
 class origin_breast_cancer_dataset(torch.utils.data.Dataset):
     def __init__(self,*args,**kwargs):
         super().__init__(*args,**kwargs)
-        self.input=pd.read_csv('/home/txke/Python_codes/project1/origin_breast_cancer_data.csv',sep='\t',usecols=[2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31]).values.tolist()
-        self.target=pd.read_csv('/home/txke/Python_codes/project1/origin_breast_cancer_data.csv',sep='\t',usecols=['diagnosis'])['diagnosis']
+        self.input=pd.read_csv(train_data_path,sep='\t',usecols=[2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31]).values.tolist()
+        self.target=pd.read_csv(train_data_path,sep='\t',usecols=['diagnosis'])['diagnosis']
         
     def __getitem__(self,idx):
         if(self.target[idx]=='M'):
@@ -80,14 +88,15 @@ for epoch in range(100000):
     if epoch%10000==0:
         print('Training_set: loss:',round(Train_loss.item(),3),end=' , ')
         printRecallAndPrecision(Train_prediction,Train_target)
-        # print('Validation_set: loss:',round(Valid_loss.item(),3),end=' , ')
-        # printRecallAndPrecision(Valid_prediction,Valid_target)
+        print('Validation_set: loss:',round(Valid_loss.item(),3),end=' , ')
+        printRecallAndPrecision(Valid_prediction,Valid_target)
     
 # Test Process
 
-Test_input=pd.read_csv('/home/txke/Python_codes/project1/breast_cancer_data_357B_100M.csv',sep='\t',usecols=[2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31]).values.tolist()
+Test_input=pd.read_csv(test_data_path,sep='\t',usecols=[2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31]).values.tolist()
 Test_input=torch.FloatTensor(Test_input)
-Test_target=pd.read_csv('/home/txke/Python_codes/project1/breast_cancer_data_357B_100M.csv',sep='\t',usecols=['diagnosis']).values.tolist()
+Test_target=pd.read_csv(test_data_path,sep='\t',usecols=['diagnosis'])['diagnosis']
+
 for idx in range(len(Test_target)):
     if Test_target[idx]=='M':
         Test_target[idx]=1
